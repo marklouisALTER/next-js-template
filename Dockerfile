@@ -9,8 +9,7 @@ WORKDIR /builder
 
 COPY package*.json ./
 
-RUN npm install --frozen-lockfile
-
+RUN npm install
 COPY . .
 
 RUN npm run build && \
@@ -22,8 +21,13 @@ WORKDIR /runner
 
 
 COPY --from=builder /builder/node_modules /runner/node_modules
-COPY --from=builder /builder/build /runner/build
+COPY --from=builder /builder/.next /runner/.next  
 COPY --from=builder /builder/package.json /runner/package.json
 
 EXPOSE 3000
 
+CMD ["npm", "run", "start"]
+
+# For running docker build 
+# docker build -t <image-name> . ex next-js-template
+# docker run -p 3000:3000 <image-name> ex next-js-template
